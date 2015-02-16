@@ -1,5 +1,9 @@
 apply plugin: 'java'
 
+group = 'org.exitcode'
+version = '1.0-SNAPSHOT'
+description = 'Spring declaration transaction support for Apache Torque 3.x'
+
 repositories {
 }
 
