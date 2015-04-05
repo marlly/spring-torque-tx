@@ -17,38 +17,79 @@ package org.exitcode.spring.torque.tx;
 
 import java.sql.Connection;
 
+import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
 import org.apache.torque.util.TransactionManager;
+import org.apache.torque.util.TransactionManagerImpl;
+import org.exitcode.spring.torque.TorqueDelegatingDataSource;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 public class SpringTransactionManagerAdapter implements TransactionManager {
 
+    // original Torque transactional manager
+    private final TransactionManager torqueTxManager = new TransactionManagerImpl();
+
+    private final TorqueDelegatingDataSource springDataSource;
+
+    public SpringTransactionManagerAdapter(TorqueDelegatingDataSource springDataSource) {
+        this.springDataSource = springDataSource;
+    }
+
     @Override
     public Connection begin() throws TorqueException {
-        // TODO Auto-generated method stub
-        return null;
+        return begin(Torque.getDefaultDB());
     }
 
     @Override
     public Connection begin(String dbName) throws TorqueException {
-        // TODO Auto-generated method stub
-        return null;
+        if (isSpringTxOpened()) {
+            return getSpringTxConnection();
+        }
+
+        return torqueTxManager.begin(dbName);
     }
 
     @Override
     public void commit(Connection con) throws TorqueException {
-        // TODO Auto-generated method stub
-        
+        if (isSpringTxOpened()) {
+            // ignore commit when spring transcation is opened, spring should do it
+            return;
+        }
+
+        torqueTxManager.commit(con);
     }
 
     @Override
     public void rollback(Connection con) throws TorqueException {
-        // TODO Auto-generated method stub
-        
+        if (isSpringTxOpened()) {
+            markTxForRollback();
+            return;
+        }
+
+        torqueTxManager.rollback(con);
     }
 
     @Override
     public void safeRollback(Connection con) {
-        // TODO Auto-generated method stub
-        
+        if (isSpringTxOpened()) {
+            markTxForRollback();
+            return;
+        }
+
+        torqueTxManager.safeRollback(con);
+    }
+
+    private boolean isSpringTxOpened() {
+        return TransactionSynchronizationManager.isActualTransactionActive();
+    }
+
+    private Connection getSpringTxConnection() {
+        return DataSourceUtils.getConnection(springDataSource);
+    }
+
+    private void markTxForRollback() {
+        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     }
 }

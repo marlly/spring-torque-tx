@@ -18,20 +18,29 @@ package org.exitcode.spring.torque;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.apache.torque.Torque;
+import org.apache.torque.TorqueException;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 
 public class TorqueDelegatingDataSource extends AbstractDataSource {
 
+    private final String databaseName;
+
+    public TorqueDelegatingDataSource(String databaseName) {
+        this.databaseName = databaseName;
+    }
+
     @Override
     public Connection getConnection() throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            return Torque.getConnection(databaseName);
+        } catch (TorqueException e) {
+            throw new SQLException(e);
+        }
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("This operation is not supported!");
     }
-
 }
