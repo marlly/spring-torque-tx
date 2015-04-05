@@ -22,9 +22,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.util.Assert;
 
-public class TorqueDelegatingDataSource extends AbstractDataSource {
+public class TorqueDelegatingDataSource extends AbstractDataSource implements InitializingBean {
 
     private static final Log LOG = LogFactory.getLog(TorqueDelegatingDataSource.class);
 
@@ -35,6 +37,11 @@ public class TorqueDelegatingDataSource extends AbstractDataSource {
 
     public TorqueDelegatingDataSource(String databaseName) {
         this.databaseName = databaseName;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Assert.notNull(databaseName, "Property 'databaseName' is required!");
     }
 
     @Override

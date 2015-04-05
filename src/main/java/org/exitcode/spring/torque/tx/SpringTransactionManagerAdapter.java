@@ -24,11 +24,13 @@ import org.apache.torque.TorqueException;
 import org.apache.torque.util.TransactionManager;
 import org.apache.torque.util.TransactionManagerImpl;
 import org.exitcode.spring.torque.TorqueDelegatingDataSource;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.util.Assert;
 
-public class SpringTransactionManagerAdapter implements TransactionManager {
+public class SpringTransactionManagerAdapter implements TransactionManager, InitializingBean {
 
     private static final Log LOG = LogFactory.getLog(SpringTransactionManagerAdapter.class);
 
@@ -42,6 +44,11 @@ public class SpringTransactionManagerAdapter implements TransactionManager {
 
     public SpringTransactionManagerAdapter(TorqueDelegatingDataSource springDataSource) {
         this.springDataSource = springDataSource;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Assert.notNull(springDataSource, "No spring managed data source has been specified!");
     }
 
     @Override
@@ -95,7 +102,7 @@ public class SpringTransactionManagerAdapter implements TransactionManager {
 
         torqueTxManager.safeRollback(con);
     }
-    
+
     public TorqueDelegatingDataSource getSpringDataSource() {
         return springDataSource;
     }
