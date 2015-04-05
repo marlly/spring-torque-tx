@@ -5,7 +5,10 @@ version = '1.0-SNAPSHOT'
 description = 'Spring declaration transaction support for Apache Torque 4.x'
 
 repositories {
+    jcenter()
 }
 
 dependencies {
+    compile 'org.apache.torque:torque-runtime:4.0'
+    compile 'org.springframework:spring-jdbc:3.2.13.RELEASE'
 }
