@@ -25,7 +25,7 @@ import org.apache.torque.util.TransactionManager;
 import org.apache.torque.util.TransactionManagerImpl;
 import org.exitcode.spring.torque.TorqueDelegatingDataSource;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.datasource.ConnectionHolder;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
@@ -116,7 +116,12 @@ public class SpringTransactionManagerAdapter implements TransactionManager, Init
     }
 
     private Connection getSpringTxConnection() {
-        return DataSourceUtils.getConnection(springDataSource);
+        Connection conn = ((ConnectionHolder) TransactionSynchronizationManager.getResource(springDataSource)).getConnection();
+        if (conn == null) {
+            throw new IllegalStateException("No connection associated with running transaction!");
+        }
+
+        return conn;
     }
 
     private void markTxForRollback() {
