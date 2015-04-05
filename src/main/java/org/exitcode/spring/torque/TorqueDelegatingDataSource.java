@@ -18,11 +18,15 @@ package org.exitcode.spring.torque;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.torque.Torque;
 import org.apache.torque.TorqueException;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 
 public class TorqueDelegatingDataSource extends AbstractDataSource {
+
+    private static final Log LOG = LogFactory.getLog(TorqueDelegatingDataSource.class);
 
     private final String databaseName;
 
@@ -32,6 +36,7 @@ public class TorqueDelegatingDataSource extends AbstractDataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
+        LOG.debug("getConnection(), db: " + databaseName);
         try {
             return Torque.getConnection(databaseName);
         } catch (TorqueException e) {
