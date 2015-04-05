@@ -28,7 +28,10 @@ public class TorqueDelegatingDataSource extends AbstractDataSource {
 
     private static final Log LOG = LogFactory.getLog(TorqueDelegatingDataSource.class);
 
-    private final String databaseName;
+    private String databaseName;
+
+    public TorqueDelegatingDataSource() {
+    }
 
     public TorqueDelegatingDataSource(String databaseName) {
         this.databaseName = databaseName;
@@ -47,5 +50,13 @@ public class TorqueDelegatingDataSource extends AbstractDataSource {
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
         throw new UnsupportedOperationException("This operation is not supported!");
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
     }
 }

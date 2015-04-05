@@ -35,7 +35,10 @@ public class SpringTransactionManagerAdapter implements TransactionManager {
     // original Torque transactional manager
     private final TransactionManager torqueTxManager = new TransactionManagerImpl();
 
-    private final TorqueDelegatingDataSource springDataSource;
+    private TorqueDelegatingDataSource springDataSource;
+
+    public SpringTransactionManagerAdapter() {
+    }
 
     public SpringTransactionManagerAdapter(TorqueDelegatingDataSource springDataSource) {
         this.springDataSource = springDataSource;
@@ -91,6 +94,14 @@ public class SpringTransactionManagerAdapter implements TransactionManager {
         }
 
         torqueTxManager.safeRollback(con);
+    }
+    
+    public TorqueDelegatingDataSource getSpringDataSource() {
+        return springDataSource;
+    }
+
+    public void setSpringDataSource(TorqueDelegatingDataSource springDataSource) {
+        this.springDataSource = springDataSource;
     }
 
     private boolean isSpringTxOpened() {
