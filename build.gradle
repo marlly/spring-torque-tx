@@ -3,6 +3,7 @@ apply plugin: 'java'
 group = 'org.exitcode'
 version = '1.0-SNAPSHOT'
 description = 'Spring declaration transaction support for Apache Torque 4.x'
+sourceCompatibility = 1.5
 
 repositories {
     jcenter()
