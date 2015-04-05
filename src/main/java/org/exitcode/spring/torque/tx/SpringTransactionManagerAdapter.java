@@ -30,6 +30,15 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
 
+/**
+ * Custom implementation of {@link TransactionManager} introduced in Torque 4.0. Once transaction above managed data
+ * source is opened using Spring, all operations like begin or commit performed by Torque API are suppresed. Only
+ * rollback will mark for rollback also running spring transaction. In that way, transaction boundaries are strictly
+ * controlled by Spring. When no running spring transaction is detected, all calls are just forwarded to the original
+ * {@code TransactionManager} {@link TransactionManagerImpl implementation}.
+ * 
+ * @author Marek Holly
+ */
 public class SpringTransactionManagerAdapter implements TransactionManager, InitializingBean {
 
     private static final Log LOG = LogFactory.getLog(SpringTransactionManagerAdapter.class);
@@ -39,9 +48,18 @@ public class SpringTransactionManagerAdapter implements TransactionManager, Init
 
     private TorqueDelegatingDataSource springDataSource;
 
+    /**
+     * Create new empty instance of {@code SpringTransactionManagerAdapter}.
+     */
     public SpringTransactionManagerAdapter() {
     }
 
+    /**
+     * Create new instance of {@code SpringTransactionManagerAdapter} which will detect any spring transactions created
+     * above given data source.
+     * 
+     * @param springDataSource spring managed data source
+     */
     public SpringTransactionManagerAdapter(TorqueDelegatingDataSource springDataSource) {
         this.springDataSource = springDataSource;
     }
@@ -103,10 +121,20 @@ public class SpringTransactionManagerAdapter implements TransactionManager, Init
         torqueTxManager.safeRollback(con);
     }
 
+    /**
+     * Return data source scanned for running spring transactions.
+     * 
+     * @return managed spring data source
+     */
     public TorqueDelegatingDataSource getSpringDataSource() {
         return springDataSource;
     }
 
+    /**
+     * Set managed spring data source which should be scanned for running spring transactions.
+     * 
+     * @param springDataSource managed spring data source
+     */
     public void setSpringDataSource(TorqueDelegatingDataSource springDataSource) {
         this.springDataSource = springDataSource;
     }

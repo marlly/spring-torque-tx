@@ -18,6 +18,8 @@ package org.exitcode.spring.torque;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.torque.Torque;
@@ -26,15 +28,29 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 import org.springframework.util.Assert;
 
+/**
+ * Basic {@link DataSource} implementation that obtain JDBC connections from Torque. Note that Torque must be
+ * initialized before any connection can be grabbed. Otherwise you will get {@link SQLException}.
+ * 
+ * @author Marek Holly
+ */
 public class TorqueDelegatingDataSource extends AbstractDataSource implements InitializingBean {
 
     private static final Log LOG = LogFactory.getLog(TorqueDelegatingDataSource.class);
 
     private String databaseName;
 
+    /**
+     * Create new empty {@code TorqueDelegatingDataSource}.
+     */
     public TorqueDelegatingDataSource() {
     }
 
+    /**
+     * Create new {@code TorqueDelegatingDataSource} which will retrieve connections from given database.
+     * 
+     * @param databaseName name of the database to obtain connections from
+     */
     public TorqueDelegatingDataSource(String databaseName) {
         this.databaseName = databaseName;
     }
@@ -59,10 +75,20 @@ public class TorqueDelegatingDataSource extends AbstractDataSource implements In
         throw new UnsupportedOperationException("This operation is not supported!");
     }
 
+    /**
+     * Return name of database used to obtain JDBC connections from.
+     * 
+     * @return database name
+     */
     public String getDatabaseName() {
         return databaseName;
     }
 
+    /**
+     * Set name of the database used to obtain JDBC connections from.
+     * 
+     * @param databaseName database name
+     */
     public void setDatabaseName(String databaseName) {
         this.databaseName = databaseName;
     }
