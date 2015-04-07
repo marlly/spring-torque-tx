@@ -30,8 +30,7 @@ Afterwards you can use declarative transaction management or Spring Transaction 
 
 ```java
 @Transactional
-public void create()
-{  
+public void create() {  
 }
 ```
 
@@ -62,23 +61,20 @@ Below, you can find examples of standard Spring XML configuration or newer appro
 ```java
 @Configuration
 @EnableTransactionManagement
-public class Config
-{
+public class Config {
+
     @Bean
-    public DataSource dataSource()
-    {
+    public DataSource dataSource() {
         return new TorqueDelegatingDataSource(Torque.getDefaultDB());
     }
 
     @Bean
-    public TransactionManager torqueTxManager()
-    {
+    public TransactionManager torqueTxManager() {
         return new SpringTransactionManagerAdapter(dataSource());
     }
 
     @Bean
-    public PlatformTransactionManager springTxManager()
-    {
+    public PlatformTransactionManager springTxManager() {
         return new DataSourceTransactionManager(dataSource());
     }
 }
