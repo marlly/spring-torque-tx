@@ -15,20 +15,20 @@ In order to create transaction, transaction manager in Spring must be able to ob
 
 Following beans needs to registered in Spring container in order to use Spring Tx management with Torque:
 
-* TorqueDelegatingDataSource
-* SpringTransactionManagerAdapter
-* DataSourceTransactionManager
+* `TorqueDelegatingDataSource`
+* `SpringTransactionManagerAdapter`
+* `DataSourceTransactionManager`
 
 Once you have registered them, you can simply initialize Torque by:
 
-```
+```java
 Torque.init(torqueProperties);
 Transaction.setTransactionManager(torqueTxManager);
 ```
 
 Afterwards you can use declarative transaction management or Spring Transaction API programmaticaly to designate code, that needs to be invoked within transaction. For instance (declarative approach):
 
-```
+```java
 @Transactional
 public void create()
 {  
@@ -39,7 +39,7 @@ Below, you can find examples of standard Spring XML configuration or newer appro
 
 ### XML configuration
 
-```
+```xml
 <bean id="dataSource" class="org.exitcode.spring.torque.TorqueDelegatingDataSource">
 	<property name="databaseName">
 		<bean class="org.apache.torque.Torque" factory-method="getDefaultDB" />
@@ -59,7 +59,7 @@ Below, you can find examples of standard Spring XML configuration or newer appro
 
 ### JavaConfig
 
-```
+```java
 @Configuration
 @EnableTransactionManagement
 public class Config
