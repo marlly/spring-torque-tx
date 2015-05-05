@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 group = 'org.exitcode'
-version = '1.0-SNAPSHOT'
+version = '1.0'
 description = 'Spring declaration transaction support for Apache Torque 4.x'
 sourceCompatibility = 1.5
 
